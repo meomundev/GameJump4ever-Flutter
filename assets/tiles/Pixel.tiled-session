@@ -1,0 +1,62 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "Level-01.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "JumpGame.tsx": {
+            "scaleInDock": 3,
+            "scaleInEditor": 5.5
+        },
+        "Level-01.tmx": {
+            "expandedObjectLayers": [
+                2,
+                3
+            ],
+            "scale": 3,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 236.49999999999997,
+                "y": 88.83333333333331
+            }
+        },
+        "Level-02.tmx": {
+            "expandedObjectLayers": [
+                2
+            ],
+            "scale": 2,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 158.25,
+                "y": 88.75
+            }
+        }
+    },
+    "last.imagePath": "E:/Flutter/jump_game/assets/images/sprite_tiles",
+    "map.height": 23,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 8,
+    "map.tileWidth": 8,
+    "map.width": 40,
+    "openFiles": [
+        "JumpGame.tsx",
+        "Level-01.tmx",
+        "Level-02.tmx"
+    ],
+    "project": "Pixel.tiled-project",
+    "recentFiles": [
+        "JumpGame.tsx",
+        "Level-02.tmx",
+        "Level-01.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 8,
+        "width": 8
+    }
+}
