@@ -9,7 +9,7 @@ import 'package:jump_game/components/level.dart';
 import 'package:jump_game/components/player.dart';
 
 class GameJump extends FlameGame
-    with HasKeyboardHandlerComponents, DragCallbacks {
+    with HasKeyboardHandlerComponents, DragCallbacks, HasCollisionDetection {
   late final CameraComponent cam;
   Player player = Player(character: 'cat_white');
   late JoystickComponent joystick;
@@ -18,7 +18,7 @@ class GameJump extends FlameGame
   @override
   Color backgroundColor() => const Color(0xFF21263F);
 
-  // Load Game
+  // Load Game //
   @override
   FutureOr<void> onLoad() async {
     await images.loadAllImages();
@@ -26,6 +26,7 @@ class GameJump extends FlameGame
     cam = CameraComponent.withFixedResolution(
         world: world, width: 320, height: 184);
     cam.viewfinder.anchor = Anchor.topLeft;
+
     addAll([cam, world]);
     if (showJoystick) {
       addJoystick();
@@ -34,7 +35,7 @@ class GameJump extends FlameGame
     return super.onLoad();
   }
 
-  // Update
+  // Update //
   @override
   void update(double dt) {
     if (showJoystick) {
@@ -43,6 +44,7 @@ class GameJump extends FlameGame
     super.update(dt);
   }
 
+  // METHOD add joystick on the game //
   void addJoystick() {
     joystick = JoystickComponent(
         knob: SpriteComponent(sprite: Sprite(images.fromCache('HUD/Knob.png'))),
@@ -52,6 +54,7 @@ class GameJump extends FlameGame
     add(joystick);
   }
 
+  // METHOD add all components of joystick //
   void updateJoystick() {
     switch (joystick.direction) {
       case JoystickDirection.left:

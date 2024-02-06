@@ -65,8 +65,11 @@ flutter:
   - assets/tiles/
   - assets/images/sprite_tiles/
   - assets/images/HUD/
+  - assets/images/Items/Foods/
+  - assets/images/Items/Collected/
   - assets/images/main_charater/cat_white/
   - assets/images/main_charater/cat_blue/
+  - assets/images/Background/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
