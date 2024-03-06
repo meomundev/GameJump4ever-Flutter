@@ -2,15 +2,34 @@ import 'dart:async';
 
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:jump_game/components/collision_block.dart';
 import 'package:jump_game/components/custom_hitbox.dart';
-import 'package:jump_game/components/food.dart';
+import 'package:jump_game/components/items/door.dart';
+import 'package:jump_game/components/monsters/flyMonster.dart';
+import 'package:jump_game/components/items/food.dart';
+import 'package:jump_game/components/items/lava.dart';
+import 'package:jump_game/components/monsters/monster.dart';
+import 'package:jump_game/components/items/saw.dart';
+import 'package:jump_game/components/monsters/slimeGray.dart';
+import 'package:jump_game/components/monsters/slimeGreen.dart';
+import 'package:jump_game/components/monsters/slimePurple.dart';
+import 'package:jump_game/components/monsters/slimeYellow.dart';
 import 'package:jump_game/components/utils.dart';
 import 'package:jump_game/game_jump.dart';
 
 // ENUM player state //
-enum PlayerState { idle, running, jumping, falling }
+enum PlayerState {
+  idle,
+  running,
+  jumping,
+  falling,
+  death,
+  appearing,
+  disappearing
+}
 
 class Player extends SpriteAnimationGroupComponent
     with HasGameRef<GameJump>, KeyboardHandler, CollisionCallbacks {
@@ -19,28 +38,38 @@ class Player extends SpriteAnimationGroupComponent
   late final SpriteAnimation runningAnimation;
   late final SpriteAnimation jumpingAnimation;
   late final SpriteAnimation fallingAnimation;
+  late final SpriteAnimation deathAnimation;
+  late final SpriteAnimation appearingAnimation;
+  late final SpriteAnimation disappearingAnimation;
   final double stepTime = 0.15;
   double horizontalMovement = 0;
-  double moveSpeed = 100;
+  double moveSpeed = 70;
   Vector2 velocity = Vector2.zero();
   bool isFacingRight = true;
   List<CollisionBlock> collisionBlocks = [];
   final double _gravity = 7;
-  final double _jumpForce = 300;
+  final double _jumpForce = 170;
   final double _terminalVelocity = 300;
   bool isOnGround = false;
   bool hasJumped = false;
   CustomHitbox hitbox =
-      CustomHitbox(offsetX: 3, offsetY: 2, width: 10, height: 14);
+      CustomHitbox(offsetX: 3, offsetY: 4, width: 10, height: 12);
+  Vector2 startingPosition = Vector2.zero();
+  bool gotHit = false;
+  bool onDoor = false;
+  double fixedDeltaTime = 1 / 60;
+  double accumulatedTime = 0;
+  int fishNumber = 0;
 
   Player({position, this.character = 'cat_white'}) : super(position: position);
 
   @override
   FutureOr<void> onLoad() {
+    priority = 1;
     _loadAllAnimations();
     // debugMode = true;
 
-// add rectangle for check whatever the player touch on the game //
+    startingPosition = Vector2(position.x, position.y);
     add(RectangleHitbox(
         position: Vector2(hitbox.offsetX, hitbox.offsetY),
         size: Vector2(hitbox.width, hitbox.height)));
@@ -50,11 +79,18 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   void update(double dt) {
-    _updatePlayerMovement(dt);
-    _updatePlayerState(dt);
-    _checkHorizontalCollisions();
-    _applyGravity(dt);
-    _checkVerticalCollisions();
+    accumulatedTime += dt;
+    while (accumulatedTime >= fixedDeltaTime) {
+      if (!gotHit && !onDoor) {
+        _updatePlayerMovement(fixedDeltaTime);
+        _updatePlayerState(fixedDeltaTime);
+        _checkHorizontalCollisions();
+        _applyGravity(fixedDeltaTime);
+        _checkVerticalCollisions();
+      }
+      accumulatedTime -= fixedDeltaTime;
+    }
+
     super.update(dt);
   }
 
@@ -74,30 +110,42 @@ class Player extends SpriteAnimationGroupComponent
 
 // METHOD the player touch something //
   @override
-  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
-    if (other is Food) {
-      other.colliedWithPlayer();
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
+    if (!onDoor) {
+      if (other is Food) other.colliedWithPlayer();
+      if (other is Saw) _respawn();
+      if (other is Monster) other.collidedWithPlayer();
+      if (other is Door) _onDoor();
+      if (other is Lava) _respawn();
+      if (other is FlyMonster) other.collidedWithPlayer();
+      if (other is SlimeGreen) other.collidedWithPlayer();
+      if (other is SlimeYellow) other.collidedWithPlayer();
+      if (other is SlimeGray) other.collidedWithPlayer();
+      if (other is SlimePurple) other.collidedWithPlayer();
     }
-    super.onCollision(intersectionPoints, other);
+
+    super.onCollisionStart(intersectionPoints, other);
   }
 
 // METHOD animations //
   void _loadAllAnimations() {
-    // idleAnimation = _spriteAnimation('Idle', 4, 12, 12);
-    // runningAnimation = _spriteAnimation('Running', 7, 15, 11);
-    // jumpingAnimation = _spriteAnimation('Jumping', 1, 13, 11);
-    // fallingAnimation = _spriteAnimation('Falling', 1, 13, 11);
-
-    idleAnimation = _spriteAnimation('Idle2', 4, 16, 16);
-    runningAnimation = _spriteAnimation('Running2', 6, 16, 16);
-    jumpingAnimation = _spriteAnimation('Jumping2', 1, 16, 16);
-    fallingAnimation = _spriteAnimation('Falling2', 1, 16, 16);
+    idleAnimation = _spriteAnimation('Idle', 4, 16, 16);
+    runningAnimation = _spriteAnimation('Running', 7, 16, 16);
+    jumpingAnimation = _spriteAnimation('Jumping', 1, 16, 16);
+    fallingAnimation = _spriteAnimation('Falling', 1, 16, 16);
+    deathAnimation = _spriteAnimation('Death', 1, 16, 16)..loop = false;
+    appearingAnimation = _specialSpriteAnimation('Appear', 5);
+    disappearingAnimation = _spriteAnimation('Disappear', 5, 16, 16);
 
     animations = {
       PlayerState.idle: idleAnimation,
       PlayerState.running: runningAnimation,
       PlayerState.jumping: jumpingAnimation,
-      PlayerState.falling: fallingAnimation
+      PlayerState.falling: fallingAnimation,
+      PlayerState.death: deathAnimation,
+      PlayerState.appearing: appearingAnimation,
+      PlayerState.disappearing: disappearingAnimation,
     };
 
     current = PlayerState.idle;
@@ -114,12 +162,25 @@ class Player extends SpriteAnimationGroupComponent
             textureSize: Vector2(vec2widht, vec2height)));
   }
 
+  SpriteAnimation _specialSpriteAnimation(String state, int amount) {
+    return SpriteAnimation.fromFrameData(
+        game.images.fromCache('main_charater/$character/$state.png'),
+        SpriteAnimationData.sequenced(
+            amount: amount,
+            stepTime: stepTime,
+            textureSize: Vector2.all(16),
+            loop: false));
+  }
+
 // METHOD for the player move //
   void _updatePlayerMovement(double dt) {
     if (hasJumped && isOnGround) _playerJump(dt);
     if (velocity.y > _gravity) isOnGround = false;
     velocity.x = horizontalMovement * moveSpeed;
     position.x += velocity.x * dt;
+    if (kDebugMode) {
+      print(fishNumber);
+    }
   }
 
 // METHOD handle all player state, use ENUM //
@@ -204,9 +265,62 @@ class Player extends SpriteAnimationGroupComponent
 
 // METHOD player jump //
   void _playerJump(double dt) {
+    if (game.playSounds) {
+      FlameAudio.play('player/jump.wav', volume: game.soundVolume);
+    }
     velocity.y = -_jumpForce;
     position.y += velocity.y * dt;
     isOnGround = false;
     hasJumped = false;
+  }
+
+  void _respawn() async {
+    fishNumber = 0;
+    if (game.playSounds) {
+      FlameAudio.play('player/gotHit.wav', volume: game.soundVolume);
+    }
+    const allowMoveDuration = Duration(microseconds: 500);
+    gotHit = true;
+    current = PlayerState.death;
+
+    await animationTicker?.completed;
+    animationTicker?.reset();
+
+    // always direction is right when respawn
+    scale.x = 1;
+    position = startingPosition;
+    current = PlayerState.appearing;
+
+    await animationTicker?.completed;
+    animationTicker?.reset();
+    velocity = Vector2.zero();
+    _updatePlayerState(650);
+    Future.delayed(allowMoveDuration, () => gotHit = false);
+    game.resetMap();
+  }
+
+  void collidedWithMonster() {
+    _respawn();
+  }
+
+  void _onDoor() {
+    if (fishNumber >= 3) {
+      if (game.playSounds) {
+        FlameAudio.play('player/onDoor.wav', volume: game.soundVolume);
+      }
+      onDoor = true;
+      current = PlayerState.disappearing;
+
+      const onDoorDuration = Duration(milliseconds: 700);
+      Future.delayed(onDoorDuration, () {
+        onDoor = false;
+        position = Vector2.all(-1000);
+      });
+
+      const waitToChangeMap = Duration(seconds: 1);
+      Future.delayed(waitToChangeMap, () {
+        game.loadNextMap();
+      });
+    }
   }
 }
