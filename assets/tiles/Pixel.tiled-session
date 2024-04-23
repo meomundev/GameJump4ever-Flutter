@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Level-02.tmx",
+    "activeFile": "Level-04.tmx",
     "expandedProjectPaths": [
         "."
     ],
@@ -30,11 +30,11 @@
                 3,
                 2
             ],
-            "scale": 4,
-            "selectedLayer": 0,
+            "scale": 3,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 99.625,
-                "y": 106.375
+                "x": 156.83333333333331,
+                "y": 90.16666666666669
             }
         },
         "Level-02.tmx": {
@@ -42,11 +42,11 @@
                 3,
                 2
             ],
-            "scale": 1.5,
-            "selectedLayer": 2,
+            "scale": 3,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 176.33333333333331,
-                "y": 119.66666666666663
+                "x": 166.83333333333331,
+                "y": 105.16666666666669
             }
         },
         "Level-03.tmx": {
@@ -57,8 +57,8 @@
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 145.49999999999997,
-                "y": 114.16666666666669
+                "x": 158.83333333333331,
+                "y": 91.83333333333331
             }
         },
         "Level-04.tmx": {
@@ -69,8 +69,8 @@
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 170.83333333333331,
-                "y": 124.49999999999999
+                "x": 158.83333333333331,
+                "y": 91.83333333333331
             }
         },
         "Level-1.tmx": {
@@ -100,9 +100,9 @@
     "recentFiles": [
         "JumpGame.tsx",
         "Level-01.tmx",
-        "Level-04.tmx",
-        "Level-03.tmx",
         "Level-02.tmx",
+        "Level-03.tmx",
+        "Level-04.tmx",
         "1Demo.tmx",
         "Level-1.tmx"
     ],

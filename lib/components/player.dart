@@ -96,13 +96,6 @@ class Player extends SpriteAnimationGroupComponent
 
   @override
   bool onKeyEvent(RawKeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
-    horizontalMovement = 0;
-
-    final isLeftKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyN);
-    final isRightKeyPressed = keysPressed.contains(LogicalKeyboardKey.keyM);
-    horizontalMovement += isLeftKeyPressed ? -1 : 0;
-    horizontalMovement += isRightKeyPressed ? 1 : 0;
-
     hasJumped = keysPressed.contains(LogicalKeyboardKey.keyZ);
 
     return super.onKeyEvent(event, keysPressed);
@@ -178,9 +171,6 @@ class Player extends SpriteAnimationGroupComponent
     if (velocity.y > _gravity) isOnGround = false;
     velocity.x = horizontalMovement * moveSpeed;
     position.x += velocity.x * dt;
-    if (kDebugMode) {
-      print(fishNumber);
-    }
   }
 
 // METHOD handle all player state, use ENUM //

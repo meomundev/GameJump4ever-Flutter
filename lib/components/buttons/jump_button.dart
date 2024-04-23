@@ -6,8 +6,8 @@ import 'package:jump_game/game_jump.dart';
 
 class JumpButton extends SpriteComponent
     with HasGameRef<GameJump>, TapCallbacks {
-  final margin = 32;
-  final buttonSize = 64;
+  final margin = 40;
+  final buttonSize = 80;
 
   JumpButton();
 
@@ -24,6 +24,7 @@ class JumpButton extends SpriteComponent
   @override
   void onTapDown(TapDownEvent event) {
     game.player.hasJumped = true;
+
     super.onTapDown(event);
   }
 

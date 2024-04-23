@@ -22,19 +22,20 @@ class MainMenuScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           body: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                const SizedBox(height: 18),
                 const Text('RAVENOUS MEOMEO',
                     style: TextStyle(
                         fontSize: 80,
                         color: Color(0xff93db5f),
                         fontFamily: 'PixelFontBold')),
-                const SizedBox(height: 72),
+                const SizedBox(height: 24),
                 InkWell(
                   onTap: () => _startGame(context),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    width: 350,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    width: 300,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: const Color(0xff93db5f),
@@ -42,16 +43,16 @@ class MainMenuScreen extends StatelessWidget {
                     child: const Text(
                       'Start Game',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 32),
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
                 InkWell(
                   onTap: () => _settingGame(context),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    width: 350,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    width: 300,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: const Color(0xff93db5f),
@@ -59,16 +60,16 @@ class MainMenuScreen extends StatelessWidget {
                     child: const Text(
                       'Setting',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 32),
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 20),
                 InkWell(
                   onTap: () => _exitGame(context),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    width: 350,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    width: 300,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                       color: const Color(0xff93db5f),
@@ -76,7 +77,7 @@ class MainMenuScreen extends StatelessWidget {
                     child: const Text(
                       'Exit',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 32),
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
                 ),
@@ -93,7 +94,7 @@ class MainMenuScreen extends StatelessWidget {
       context,
       CustomPageRoute(
         builder: (context, animation, secondaryAnimation) =>
-            const ScreensController(screen: ListScreens.listMap),
+            const ScreensController(screen: ListScreens.gamePlay),
       ),
     );
   }

@@ -33,9 +33,9 @@
  </layer>
  <objectgroup id="3" name="Collisions">
   <object id="2" x="8" y="8" width="304" height="8"/>
-  <object id="3" x="8" y="16" width="8" height="152"/>
-  <object id="4" x="8" y="168" width="304" height="8"/>
-  <object id="5" x="304" y="16" width="8" height="152"/>
+  <object id="3" x="8" y="16" width="8" height="160"/>
+  <object id="4" x="16" y="168" width="288" height="8"/>
+  <object id="5" x="304" y="16" width="8" height="160"/>
   <object id="8" x="64" y="152" width="32" height="16"/>
   <object id="14" x="176" y="16" width="48" height="24"/>
   <object id="15" x="224" y="16" width="80" height="40"/>
