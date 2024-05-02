@@ -8,85 +8,89 @@ class Menu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: Container(
-            color: Colors.black.withOpacity(0.5),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('PAUSED',
-                      style: TextStyle(
-                          fontSize: 80,
-                          color: Color(0xff93db5f),
-                          fontFamily: 'PixelFontBold')),
-                  const SizedBox(height: 72),
-                  InkWell(
-                    onTap: () => _resume(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      width: 350,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xff93db5f),
-                      ),
-                      child: const Text(
-                        'Resume',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 32),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  InkWell(
-                    onTap: () => _settingGame(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      width: 350,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xff93db5f),
-                      ),
-                      child: const Text(
-                        'Setting',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 32),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  InkWell(
-                    onTap: () => _backToMainMenu(context),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      width: 350,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: const Color(0xff93db5f),
-                      ),
-                      child: const Text(
-                        'Back to main menu',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 32),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+    return Stack(children: [
+      Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/backgrounds/mainMenu.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
       ),
-    );
+      Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(
+                height: 18,
+              ),
+              const Text('PAUSED',
+                  style: TextStyle(
+                      fontSize: 80,
+                      color: Color(0xff93db5f),
+                      fontFamily: 'PixelFontBold')),
+              const SizedBox(height: 24),
+              InkWell(
+                onTap: () => _resume(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  width: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xff93db5f),
+                  ),
+                  child: const Text(
+                    'Resume',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: () => _settingGame(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  width: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xff93db5f),
+                  ),
+                  child: const Text(
+                    'Setting',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: () => _backToMainMenu(context),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  width: 300,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: const Color(0xff93db5f),
+                  ),
+                  child: const Text(
+                    'Back to main menu',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ]);
   }
 
   _resume(BuildContext context) {
     Navigator.pop(context);
-    SystemNavigator.pop();
   }
 
   _settingGame(BuildContext context) {

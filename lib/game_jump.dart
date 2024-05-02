@@ -11,6 +11,7 @@ import 'package:jump_game/components/buttons/menu_button.dart';
 import 'package:jump_game/components/level.dart';
 import 'package:jump_game/components/player.dart';
 import 'package:jump_game/screens/list_map.dart';
+import 'package:jump_game/screens/setting.dart';
 
 class GameJump extends FlameGame
     with
@@ -29,7 +30,6 @@ class GameJump extends FlameGame
     'Level-02',
     'Level-03',
     'Level-04',
-    'Level-05'
   ];
   int currentMapIndex = 0;
   bool playSounds = true;
@@ -39,6 +39,8 @@ class GameJump extends FlameGame
   ListMapScreen listMapScreen = const ListMapScreen();
   bool isPressedLeft = false;
   bool isPressedRight = false;
+  bool useJoyStick = false;
+  bool hasWon = false; // Biến để theo dõi trạng thái chiến thắng
 
   @override
   Color backgroundColor() => const Color(0xFF221f30);
@@ -49,9 +51,12 @@ class GameJump extends FlameGame
   FutureOr<void> onLoad() async {
     await images.loadAllImages();
 
-    if (showControls) {
+    if (showControls && useJoyStick == false) {
       addButtonLeftMove();
       addButtonRightMove();
+      add(JumpButton());
+    } else if (showControls && useJoyStick == true) {
+      addJoystick();
       add(JumpButton());
     }
     add(MenuButton());
@@ -62,21 +67,23 @@ class GameJump extends FlameGame
 
   @override
   void update(double dt) {
-    if (showControls) {
+    if (showControls && useJoyStick == false) {
       updateMove();
+    } else if (showControls && useJoyStick == true) {
+      updateJoystick();
     }
     super.update(dt);
   }
 
-  // void addJoystick() {
-  //   joystick = JoystickComponent(
-  //       priority: 3,
-  //       knob: SpriteComponent(sprite: Sprite(images.fromCache('HUD/Knob.png'))),
-  //       background: SpriteComponent(
-  //           sprite: Sprite(images.fromCache('HUD/Joystick.png'))),
-  //       margin: const EdgeInsets.only(left: 40, bottom: 40));
-  //   add(joystick);
-  // }
+  void addJoystick() {
+    joystick = JoystickComponent(
+        priority: 3,
+        knob: SpriteComponent(sprite: Sprite(images.fromCache('HUD/Knob.png'))),
+        background: SpriteComponent(
+            sprite: Sprite(images.fromCache('HUD/Joystick.png'))),
+        margin: const EdgeInsets.only(left: 40, bottom: 40));
+    add(joystick);
+  }
 
   void addButtonLeftMove() {
     final spriteComponent = SpriteComponent(
@@ -89,7 +96,7 @@ class GameJump extends FlameGame
       button: spriteComponent,
       onPressed: () => isPressedLeft = true,
       onReleased: () => {isPressedLeft = false, player.horizontalMovement = 0},
-      onCancelled: () => {isPressedLeft = false, player.horizontalMovement = 0},
+      // onCancelled: () => {isPressedLeft = false, player.horizontalMovement = 0},
     );
     if (isPressedLeft == true) {
       if (kDebugMode) {
@@ -110,8 +117,8 @@ class GameJump extends FlameGame
       button: spriteComponent,
       onPressed: () => isPressedRight = true,
       onReleased: () => {isPressedRight = false, player.horizontalMovement = 0},
-      onCancelled: () =>
-          {isPressedRight = false, player.horizontalMovement = 0},
+      // onCancelled: () =>
+      //     {isPressedRight = false, player.horizontalMovement = 0},
     );
     if (isPressedRight == true) {
       if (kDebugMode) {
@@ -125,23 +132,23 @@ class GameJump extends FlameGame
     player.horizontalMovement = isPressedLeft ? -1 : (isPressedRight ? 1 : 0);
   }
 
-  // void updateJoystick() {
-  //   switch (joystick.direction) {
-  //     case JoystickDirection.left:
-  //     case JoystickDirection.upLeft:
-  //     case JoystickDirection.downLeft:
-  //       player.horizontalMovement = -1;
-  //       break;
-  //     case JoystickDirection.right:
-  //     case JoystickDirection.upRight:
-  //     case JoystickDirection.downRight:
-  //       player.horizontalMovement = 1;
-  //       break;
-  //     default:
-  //       player.horizontalMovement = 0;
-  //       break;
-  //   }
-  // }
+  void updateJoystick() {
+    switch (joystick.direction) {
+      case JoystickDirection.left:
+      case JoystickDirection.upLeft:
+      case JoystickDirection.downLeft:
+        player.horizontalMovement = -1;
+        break;
+      case JoystickDirection.right:
+      case JoystickDirection.upRight:
+      case JoystickDirection.downRight:
+        player.horizontalMovement = 1;
+        break;
+      default:
+        player.horizontalMovement = 0;
+        break;
+    }
+  }
 
   void _loadMap() {
     Future.delayed(const Duration(microseconds: 1), () {
@@ -162,12 +169,50 @@ class GameJump extends FlameGame
       player.fishNumber = 0;
     } else {
       currentMapIndex = 0;
-      _loadMap();
+      if (mapNames[currentMapIndex] == 'Level-04') {
+        _win();
+      } else {
+        _loadMap();
+      }
     }
   }
 
   void resetMap() {
+    isPressedRight = false;
+    isPressedLeft = false;
     removeAll(children);
     onLoad();
+  }
+
+  void _win() {
+    hasWon = true;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    if (hasWon) {
+      final paint = Paint()..color = Colors.black.withOpacity(0.5);
+      canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y), paint);
+
+      const textStyle = TextStyle(
+        color: Colors.white,
+        fontSize: 24,
+      );
+      const textSpan = TextSpan(
+        text: 'Congratulations! You win!',
+        style: textStyle,
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
+      );
+      textPainter.layout(minWidth: size.x, maxWidth: size.x);
+      textPainter.paint(
+        canvas,
+        Offset(0, size.y / 2 - textPainter.height / 2),
+      );
+    }
   }
 }

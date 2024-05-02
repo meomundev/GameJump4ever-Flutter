@@ -69,12 +69,6 @@
     <property name="offPos" type="float" value="3"/>
    </properties>
   </object>
-  <object id="35" name="Monster" type="Monster" x="272" y="88" width="16" height="16">
-   <properties>
-    <property name="offNeg" type="float" value="4"/>
-    <property name="offPos" type="float" value="3"/>
-   </properties>
-  </object>
   <object id="23" name="Saw" type="Saw" x="152" y="16" width="16" height="16">
    <properties>
     <property name="isVertical" type="bool" value="false"/>
